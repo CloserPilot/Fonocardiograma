@@ -1,5 +1,0 @@
-(fp_lib_table
-  (version 7)
-  (lib (name "MAX9814")(type "KiCad")(uri "${KIPRJMOD}/MAX9814.pretty")(options "")(descr ""))
-  (lib (name "Bluetooth")(type "KiCad")(uri "${KIPRJMOD}/Bluetooth.pretty")(options "")(descr ""))
-)
