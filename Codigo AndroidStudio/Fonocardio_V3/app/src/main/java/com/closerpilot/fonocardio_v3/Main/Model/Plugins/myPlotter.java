@@ -24,7 +24,17 @@ public class myPlotter {
     private static GraphView plotter;
     private static View plotterAuxLayout;
 
-    //Manda el BaudRate al main thread
+
+    //////////////////////////////////////////////////////
+    /////////////                           //////////////
+    /////////////          PRIVATE          //////////////
+    /////////////                           //////////////
+    //////////////////////////////////////////////////////
+
+    /**
+     * Send the Baudrate to the UI
+     * @param baudRate
+     */
     private static void sendBaudRateToMain(int baudRate){
         Message msg = Message.obtain();
         msg.what = HANDLER_BUFFERS_BAUDRATE;
@@ -33,16 +43,33 @@ public class myPlotter {
     }
 
 
+    //////////////////////////////////////////////////////
+    /////////////                           //////////////
+    /////////////          PUBLIC           //////////////
+    /////////////                           //////////////
+    //////////////////////////////////////////////////////
 
-
+    /**
+     * Set the plotter
+     * @param plot plotter to set
+     */
     public static void setPlotter(GraphView plot){
         plotter = plot;
     }
 
+
+    /**
+     * Set the aux Layout for the Plotter
+     * @param auxLayout layout to set
+     */
     public static void setPlotterAuxLayout(View auxLayout){
         plotterAuxLayout = auxLayout;
     }
 
+
+    /**
+     * Set the configuration design
+     */
     public static void setPlotterConfiguration(){
         viewport = plotter.getViewport();
         viewport.setYAxisBoundsManual(true);
@@ -88,12 +115,20 @@ public class myPlotter {
         }
     }
 
+
+    /**
+     * Clean the current Plotter
+     */
     public static void cleanPlotter(){
         myPlotter.plotter.removeAllSeries();
         packagesReceive = 0;
         dataCount = 0;
     }
 
+    /**
+     * Get the BaudRate
+     * @return BaudRate
+     */
     public static int getBaudRate(){
         return baudRate;
     }
@@ -108,6 +143,9 @@ public class myPlotter {
     private static int packagesReceive = 0;
     private static volatile int baudRate = 0;
 
+    /**
+     * Add a new entry in the plotter
+     */
     public static void addEntry(){
         try {
             System.gc();
