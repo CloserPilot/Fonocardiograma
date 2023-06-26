@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/id_path"
+        android:checkable="false"
+        android:icon="@drawable/baseline_folder_24"
+        android:title="@string/id_path"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/id_ip_address"
+        android:checkable="false"
+        android:icon="@drawable/baseline_wifi_24"
+        android:title="@string/id_ip_address"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/id_bluetooth"
+        android:checkable="false"
+        android:icon="@drawable/baseline_bluetooth_24"
+        android:title="@string/id_bluetooth"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/id_settings"
+        android:title="@string/id_settings"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/id_info"
+        android:title="@string/id_info"
+        app:showAsAction="never"/>
+
+</menu>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.closerpilot.fonocardio_v3">
+
+    <uses-permission android:name="android.permission.BLUETOOTH"/>              <!--Permiso Bluetooth-->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>        <!--Permiso Bluetooth-->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />     <!--Permiso Bluetooth-->
+    <uses-permission android:name="android.permission.VIBRATE" />               <!--Permiso Vibrar-->
+    <uses-permission android:name="android.permission.INTERNET" />              <!--Permiso Internet-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />  <!--Permiso Network-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />     <!--Permiso Wifi-->
+
+    <application
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Fonocardio_V3"
+        tools:targetApi="31">
+        <activity
+            android:name=".LinkedDevices.LinkedDevicesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Main.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

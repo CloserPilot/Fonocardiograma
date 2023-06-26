@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Fonocardiograma V3</string>
+
+    <!--id-->
+    <string name="id_info">Informacion</string>
+    <string name="id_bluetooth">Bluetooth</string>
+    <string name="id_path">Ubicacion de las carpetas</string>
+    <string name="id_ip_address">Dirección IP de dispositivo</string>
+
+    <!--Text-->
+    <string name="id_bluetooth_disconnected">Desconectado</string>
+    <string name="id_bluetooth_connected">Conectado</string>
+    <string name="id_status_bluetooth">Conectado</string>
+    <string name="id_file_name">Nombre del archivo</string>
+    <string name="id_error">Mensajes de error</string>
+    <string name="id_settings">Configuracion</string>
+    <string name="id_buttonConfig">Aceptar</string>
+    <string name="id_bufferCount">Numero de segundos</string>
+
+    <!--Button Labels-->
+    <string name="Stop">Detener</string>
+    <string name="Reset">Reiniciar</string>
+
+    <!--Buttons-->
+    <string name="id_button_main">Iniciar</string>
+
+    <!--Chronometer-->
+    <string name="id_chronometer">Cronometro</string>
+
+    <!--Images-->
+    <string name="id_status_bluetooth_gray">Gris</string>
+    <string name="id_status_bluetooth_icon">Status</string>
+
+    <!--Plot-->
+    <string name="id_plotter">Gráfica</string>
+
+
+</resources>

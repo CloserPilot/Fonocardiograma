@@ -1,0 +1,7 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "MAX9814")(type "KiCad")(uri "${KIPRJMOD}/MAX9814.pretty")(options "")(descr ""))
+  (lib (name "Bluetooth")(type "KiCad")(uri "${KIPRJMOD}/Bluetooth.pretty")(options "")(descr ""))
+  (lib (name "Switch_SS12D00G4")(type "KiCad")(uri "${KIPRJMOD}/Switch_SS12D00G4.pretty")(options "")(descr ""))
+  (lib (name "XCVR_HC-05")(type "KiCad")(uri "${KIPRJMOD}/XCVR_HC-05.pretty")(options "")(descr ""))
+)
