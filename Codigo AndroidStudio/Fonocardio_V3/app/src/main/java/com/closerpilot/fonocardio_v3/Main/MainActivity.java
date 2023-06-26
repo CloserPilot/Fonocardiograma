@@ -1,6 +1,5 @@
 package com.closerpilot.fonocardio_v3.Main;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,12 +7,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,7 +22,6 @@ import android.widget.TextView;
 
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadDataProcess;
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadHttpServer;
-import com.closerpilot.fonocardio_v3.Main.Model.__Constants__;
 import com.closerpilot.fonocardio_v3.R;
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadData;
 import com.closerpilot.fonocardio_v3.LinkedDevices.LinkedDevicesActivity;
@@ -52,9 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonStart;
     private TextView errorText;
     private TextView fileName;
-
-    //Variable para ocultar/mostrat el Path
-    private boolean showPath = false;
+    private TextView baudRate;
 
     //Variable de estado del cronómetro (RUN-STAND_BY-STOP)
     private int chronometerRunning = STOP;
@@ -65,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout  relativeLayout;
 
 
+    /**
+     * Calls when Activity starts
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,11 +84,12 @@ public class MainActivity extends AppCompatActivity {
         errorText = findViewById(R.id.id_error);
         errorText.setText("");
         fileName = findViewById(R.id.id_file_name);
+        baudRate = findViewById(R.id.id_baudRate);
         myPlotter.setPlotter(findViewById(R.id.id_plotter));
         myPlotter.setPlotterAuxLayout(findViewById(R.id.constraintLayoutPlot));
         myPlotter.setPlotterConfiguration();
 
-        myChronometer.cronometro = findViewById(R.id.id_chronometer);
+        myChronometer.chronometer = findViewById(R.id.id_chronometer);
         __PlugginControl__.toThreadDataProcessHandler.sendEmptyMessage(HANDLER_BUFFERS_PATH);
 
         if (savedInstanceState != null) {
@@ -98,36 +97,69 @@ public class MainActivity extends AppCompatActivity {
             buttonStart.setText(savedInstanceState.getString("buttonState"));
             if (savedInstanceState.getInt("isTiming") == STAND_BY) {
                 myChronometer.setBaseTime(savedInstanceState.getLong("time"));
-                myChronometer.cronometro.start();
+                myChronometer.chronometer.start();
                 chronometerRunning = savedInstanceState.getInt("isTiming");
             }
         }
     }
 
+    /**
+     * Calls when Activity is destroyed
+     */
+    @Override
+    protected void onDestroy() {
+        bluetoothBlinkImage = null;
+        bluetoothStatusText = null;
+        buttonStart = null;
+        errorText = null;
+        fileName = null;
+        super.onDestroy();
+    }
 
+
+    /**
+     * Starts the ThreadData thread
+     */
     private void starThreadData() {
         if (!ThreadData.isThreadDataRunning())
             __PlugginControl__.threadData.start();
     }
 
+
+    /**
+     * Starts the ThreadDataProcess thread
+     */
     private void startThreadDataProcess() {
         if (!ThreadDataProcess.isThreadDataProcessRunning())
             __PlugginControl__.threadDataProcess.start();
     }
 
+
+    /**
+     * Starts the ThreadHtppServer thread
+     */
     private void startThreadHtppServer(){
         if(!ThreadHttpServer.isThreadHttpServerRunning())
             __PlugginControl__.threadHttpServer.start();
     }
 
+
+    /**
+     * Starts the timer
+     */
     private void startmyTimmer(){
         if(!myTimer.ismyTimmerRunning())
             myTimer.startTimer();
     }
 
+
+    /**
+     * Save the important info before killing the Activity
+     * @param outState
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putLong("time", myChronometer.cronometro.getBase());
+        outState.putLong("time", myChronometer.chronometer.getBase());
         outState.putInt("isTiming", chronometerRunning);
         outState.putString("fileNameStr",fileNameStr);
         outState.putString("buttonState", buttonStart.getText().toString());
@@ -135,33 +167,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        //myTimer.stopTimer();
-        //myChronometer.stopChronometer();
+    //////////////////////////////////////////////////////
+    /////////////                           //////////////
+    /////////////         HANDLER           //////////////
+    /////////////                           //////////////
+    //////////////////////////////////////////////////////
 
-        //__PlugginControl__.toThreadDataHandler.sendEmptyMessage(HANDLER_BLUETOOTH_RESET);
-        //__PlugginControl__.toThreadDataProcessHandler.sendEmptyMessage(HANDLER_BUFFERS_CLEAR);
-        //__PlugginControl__.context = null;
-        //__PlugginControl__.toMainHandler = null;
-
-        //Reset de variables
-        //bluetoothBlinkImage = null;
-        //bluetoothStatusText = null;
-        //buttonStart = null;
-        //errorText = null;
-        //fileName = null;
-
-        //myPlotter.cleanPlotter();
-        //myPlotter.setPlotter(null);
-        //myPlotter.setPlotterAuxLayout(null);
-
-        //myChronometer.cronometro = null;
-        //mainHandler = null;
-        super.onDestroy();
-    }
-
-
+    /**
+     * Handler for Main Activity
+     */
     private Handler mainHandler = new Handler(Looper.getMainLooper()){
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -198,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case HANDLER_BUFFERS_BAUDRATE:
-                        //myPlotter.addEntry();
+                        baudRate.setText("BaudRate: " + msg.obj.toString());
                         break;
 
                     case HANDLER_ERROR:
@@ -222,6 +236,12 @@ public class MainActivity extends AppCompatActivity {
     /////////////           BUTTON          //////////////
     /////////////                           //////////////
     //////////////////////////////////////////////////////
+
+    /**
+     * OnClick method for the MainButton.
+     * According to the state of the fileName and the Chronometer, take an action
+     * @param view
+     */
     public void buttonMain(View view){
         fileNameStr = fileName.getText().toString();
 
@@ -241,6 +261,10 @@ public class MainActivity extends AppCompatActivity {
         myVibrator.vibrate(50);
     }
 
+    /**
+     * Start the sampling
+     * @param fileName Name of the store file
+     */
     private void buttonMain_Start(String fileName){
         buttonStart.setText(R.string.Stop);
         chronometerRunning = RUN;
@@ -255,6 +279,10 @@ public class MainActivity extends AppCompatActivity {
         myToast.message("Iniciando...");
     }
 
+
+    /**
+     * Stop the sampling
+     */
     private void buttonMain_Stop(){
         buttonStart.setText(R.string.Reset);
         chronometerRunning = STOP;
@@ -272,14 +300,22 @@ public class MainActivity extends AppCompatActivity {
     //////////////////////////////////////////////////////
 
 
-    //Despliega el menu
+    /**
+     * Deploys the menu
+      * @param menu
+     * @return
+     */
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.overflow, menu);   //R->carperta Res | menu->carpeta menu | overflow -> nombre de la activity
         return true;
     }
 
 
-    //Ejecuta una accion segun el icono seleccionado
+    /**
+     * Execute an option depending of the item selected
+      * @param item Selection
+     * @return
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();      //Recupera el item seleccionado
 
@@ -315,35 +351,28 @@ public class MainActivity extends AppCompatActivity {
     private LayoutInflater inflater = null;
     private View popupView = null;
 
+    /**
+     * Pop up the configuration layout menu
+     */
     private void configurationWindow() {
-        // inflate the layout of the popup window
+        // Inflate the layout of the popup window
         inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         popupView = inflater.inflate(R.layout.configuration, null);
 
-        // create the popup window
+        // Create the popup window
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true; // lets taps outside the popup also dismiss it
         popupWindow = new PopupWindow(popupView, width, height, focusable);
 
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
         popupWindow.showAtLocation(relativeLayout, Gravity.CENTER, 0, 0);
-
-        /*
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //popupWindow.dismiss();
-                return true;
-            }
-        });
-        */
-
     }
 
 
+    /**
+     *
+     * @param view
+     */
     public void setBufferCount(View view){
         TextView bufferCountText = popupView.findViewById(R.id.id_bufferCount);
 

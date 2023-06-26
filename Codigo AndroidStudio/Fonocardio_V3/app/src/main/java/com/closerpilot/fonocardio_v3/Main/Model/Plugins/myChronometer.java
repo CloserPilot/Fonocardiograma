@@ -4,23 +4,21 @@ import android.os.SystemClock;
 import android.widget.Chronometer;
 
 public class myChronometer {
-    private static boolean running = false;
-
-    public static Chronometer cronometro;
+    public static Chronometer chronometer;
 
     /**
      * Start the Chronometer count
      */
     public static void startChronometer(){
-        cronometro.setBase(SystemClock.elapsedRealtime());
-        cronometro.start();
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
     }
 
     /**
      * Stop the Chronometer count
      */
     public static void stopChronometer(){
-        cronometro.stop();
+        chronometer.stop();
     }
 
     /**
@@ -28,7 +26,7 @@ public class myChronometer {
      * @param time base time
      */
     public static void setBaseTime(long time){
-        cronometro.setBase(time);
+        chronometer.setBase(time);
     }
 
 }

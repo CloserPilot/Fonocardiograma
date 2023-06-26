@@ -11,20 +11,9 @@ import java.net.InetSocketAddress;
 
 public class WebSocketHttp extends WebSocketServer {
     private static final String TAG = "myWebSocket";
-    int contador = 0;
 
     public WebSocketHttp(String address, int port) {
         super(new InetSocketAddress(address, port));
-    }
-
-    @Override
-    public void onClose(org.java_websocket.WebSocket conn, int code, String reason, boolean remote) {
-    }
-
-    @Override
-    public void onError(org.java_websocket.WebSocket conn, Exception e) {
-        Log.d(TAG, "onError: " + e);
-
     }
 
     @Override
@@ -35,12 +24,19 @@ public class WebSocketHttp extends WebSocketServer {
     }
 
     @Override
+    public void onOpen(org.java_websocket.WebSocket conn, ClientHandshake handshake) {
+    }
+
+    @Override
     public void onMessage(org.java_websocket.WebSocket conn, String message) {
     }
 
     @Override
-    public void onOpen(org.java_websocket.WebSocket conn, ClientHandshake handshake) {
-        //broadcast("new connection: " + contador); //This method sends a message to all clients connected
-        //contador++;
+    public void onClose(org.java_websocket.WebSocket conn, int code, String reason, boolean remote) {
+    }
+
+    @Override
+    public void onError(org.java_websocket.WebSocket conn, Exception e) {
+        Log.d(TAG, "onError: " + e);
     }
 }

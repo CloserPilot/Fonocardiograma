@@ -16,6 +16,7 @@
     <string name="id_settings">Configuracion</string>
     <string name="id_buttonConfig">Aceptar</string>
     <string name="id_bufferCount">Numero de segundos</string>
+    <string name="id_baudRate">BaudRate</string>
 
     <!--Button Labels-->
     <string name="Stop">Detener</string>
