@@ -38,11 +38,11 @@ import com.closerpilot.fonocardio_v3.Main.Model.Plugins.myVibrator;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
 
-    //Indicador al usuario del estado Bluetooth
+    //Bluetooth indicators
     private boolean bluetoothBlink = false;
     private boolean bluetoothStatus = BLUETOOTH_DISCONNECTED;
 
-    //Interfaz gráfica
+    //UI
     private ImageView bluetoothBlinkImage;
     private TextView bluetoothStatusText;
     private Button buttonStart;
@@ -50,12 +50,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView fileName;
     private TextView baudRate;
 
-    //Variable de estado del cronómetro (RUN-STAND_BY-STOP)
+    //Chronometer states (RUN-STAND_BY-STOP)
     private int chronometerRunning = STOP;
 
-    //Variable para el nombre del archivo
+    //File name
     private String fileNameStr = "";
 
+    //Pop up "configuration" window
     private RelativeLayout  relativeLayout;
 
 
@@ -370,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     *
+     * Set the number of seconds to show in the plot
      * @param view
      */
     public void setBufferCount(View view){

@@ -26,24 +26,24 @@ import java.util.Vector;
 public class ThreadData extends Thread {
     private static final String TAG = "ThreadData";
 
-    //Variables Bluetooth
+    //Bluetooth
     private static volatile String bluetoothMacAddress = null;
     private static volatile BluetoothDevice bluetoothDevice = null;
     private static volatile BluetoothSocket bluetoothSocket = null;
-    private static final UUID BLUETOOTH_MODULE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");    // Identificador unico de servicio - SPP UUID
+    private static final UUID BLUETOOTH_MODULE_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");    // Service Identify - SPP UUID
 
-    //Buffers de entrada/salida
+    // I/O Buffers
     private static volatile InputStream bluetoothInputStream = null;
     private static volatile OutputStream bluetoothOutputStream = null;
 
-    //Arreglo de un byte para leer del buffer bluetooth
+    //Arrays to read a byte from bleutooth input
     private static final byte[] byteHigh = new byte[1];
     private static final byte[] byteLow = new byte[1];
 
-    //Estructura para almacenar los datos por el tiempo definido en myTimer
+    // Storage the data for a definec time set in myTimmer
     private static final Vector<Short> bufferDinamic = new Vector<>();
 
-    //Variable para saber si el hilo ya esta corriendo
+    // Boolean to know if current thread is running
     private static boolean threadDataRunning = false;
 
 
@@ -53,7 +53,13 @@ public class ThreadData extends Thread {
     /////////////         PRIVADOS          //////////////
     /////////////                           //////////////
     //////////////////////////////////////////////////////
-    //Crea el socketBluetooth
+
+    /**
+     * Creates the bluetooth socket
+     * @param device
+     * @return The bluetooth socket, null if otherwise.
+     * @throws IOException
+     */
     private static BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
         if (ActivityCompat.checkSelfPermission(__PlugginControl__.context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             return device.createRfcommSocketToServiceRecord(BLUETOOTH_MODULE_UUID);
@@ -62,7 +68,10 @@ public class ThreadData extends Thread {
     }
 
 
-    //Liga los buffers de entrada y salida
+    /**
+     * Links the I/O bluetooth buffers
+     * @param socket The socket to link
+     */
     private static void linkBuffersBluetooth(BluetoothSocket socket) {
         try {
             bluetoothInputStream = socket.getInputStream();
@@ -74,7 +83,10 @@ public class ThreadData extends Thread {
     }
 
 
-    //Manda una secuencia de caracteres
+    /**
+     * Sends a String to the bluetooth output
+     * @param str The string to send
+     */
     private static void writeBluetooth(@NonNull String str) {
         if (isBluetoothSocketReady()) {
             try {
@@ -89,7 +101,9 @@ public class ThreadData extends Thread {
     }
 
 
-    //Manda un error a la UIThread
+    /**
+     * Sends an error to the MainActivity
+     */
     private static void errorToMain_Bluetooth() {
         Message msg = Message.obtain();
         msg.what = HANDLER_ERROR;
@@ -98,7 +112,10 @@ public class ThreadData extends Thread {
     }
 
 
-    //Crea las conexiones Bluetooth
+    /**
+     * Connects the bluetooth to the given macAddress
+     * @param macAddress The MAC-Address to connect the bluetooth
+     */
     private static void connectBluetooth(String macAddress) {
         resetBluetooth();
         bluetoothMacAddress = macAddress;
@@ -130,7 +147,9 @@ public class ThreadData extends Thread {
     }
 
 
-    //Reinicia los parametros del bluetooth
+    /**
+     * Resets the bluetooth
+     */
     private static void resetBluetooth() {
 
         if (bluetoothSocket != null) {
@@ -170,12 +189,18 @@ public class ThreadData extends Thread {
     /////////////                           //////////////
     //////////////////////////////////////////////////////
 
-    //Verifica si todos los parámetros son validos
+    /**
+     * Checks if all the bluetooth parameters are set
+     * @return {@code True} if all is set. {@code False} if otherwise.
+     */
     public static boolean isBluetoothSocketReady() {
         return bluetoothMacAddress != null && bluetoothSocket != null && bluetoothInputStream != null && bluetoothOutputStream != null;
     }
 
-    //Sabe si el hilo esta corriento
+    /**
+     * Returns the state of the current Thread
+     * @return {@code True} if Thread is running. {@code False} if otherwise.
+     */
     public static boolean isThreadDataRunning(){
         return threadDataRunning;
     }
@@ -186,6 +211,9 @@ public class ThreadData extends Thread {
     /////////////                           //////////////
     //////////////////////////////////////////////////////
 
+    /**
+     * Handler for Thread Data
+     */
     private static char startStopAttiny = ATTINY_STOP;
     public static Handler threadDataHandler = new Handler(Looper.myLooper()) {
         public void handleMessage(@NonNull Message msg) {
@@ -211,7 +239,7 @@ public class ThreadData extends Thread {
 
                 case HANDLER_BLUETOOTH_TIMER:
                     writeBluetooth(Character.toString(startStopAttiny));
-                    if (isBluetoothSocketReady() && bufferDinamic.size() > 0) {
+                    if (isBluetoothSocketReady() && bufferDinamic.size() > 0 && startStopAttiny==ATTINY_START) {
                         try {
                             __PlugginControl__.bufferRawData.put(bufferDinamic.toArray(new Short[0]));
                             Log.d(TAG, "handleMessage: " + bufferDinamic.size());
@@ -233,6 +261,10 @@ public class ThreadData extends Thread {
     /////////////                           //////////////
     //////////////////////////////////////////////////////
 
+    /**
+     * Run method
+     * If there is any data in the bluetooth buffer, storage it
+     */
     @Override
     public void run() {
         __PlugginControl__.toThreadDataHandler = threadDataHandler;
@@ -245,7 +277,7 @@ public class ThreadData extends Thread {
                     bluetoothInputStream.read(byteLow);
                     short dataReceived = (short) (((byteHigh[0] & 0xff) << 8) | (byteLow[0] & 0xff));
 
-                    if (dataReceived < 1024) {              //Al ser solo de 10 bits, el dato no puede ser mayor a 1024, caso contrario es un error
+                    if (dataReceived < 1024) {              //If the data is more than 1024 error
                         if(INVERT_DATA) {                   //If the data is inverted due to the circuit
                             dataReceived = (short)(1024 - dataReceived);
                         }
@@ -253,7 +285,7 @@ public class ThreadData extends Thread {
                         bufferDinamic.add(dataReceived);
                     } else {
                         Log.d(TAG, "Datos Error");
-                        bluetoothInputStream.read();    //Se lee el siguiente byte para intentar remedear el error
+                        bluetoothInputStream.read();    //Try to fix the error reading the next byte
                     }
 
                 } catch (IOException e) {

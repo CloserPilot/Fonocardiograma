@@ -11,11 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
-
-import android.content.Context;
-import android.net.wifi.WifiManager;
 import android.os.Message;
-import android.text.format.Formatter;
 
 import static com.closerpilot.fonocardio_v3.Main.Model.__Constants__.*;
 
@@ -23,11 +19,56 @@ import static com.closerpilot.fonocardio_v3.Main.Model.__Constants__.*;
 public class ThreadHttpServer extends Thread {
     private static final String TAG = "HttpServerThread";
 
-    //Variable para saber si el hilo ya esta corriendo
+    // Boolean to know if current thread is running
     private static boolean threadHttpServerRunning = false;
 
-    static String msgLog = "";
+    //////////////////////////////////////////////////////
+    /////////////                           //////////////
+    /////////////          PRIVATE          //////////////
+    /////////////                           //////////////
+    //////////////////////////////////////////////////////
 
+    /**
+     * Read the HTML file and convert it to String
+     * @param fileName The file name of the html file
+     * @return The String of the html file
+     * @throws IOException
+     */
+    private static String htmlToString(String fileName) throws IOException {
+        InputStream inputStream = __PlugginControl__.context.getAssets().open(fileName);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF8"));
+        StringBuilder out = new StringBuilder();
+        final char[] buffer = new char[1024];
+        int read;
+        do {
+            read = bufferedReader.read(buffer, 0, buffer.length);
+            if (read > 0)
+                out.append(buffer, 0, read);
+        } while (read >= 0);
+
+        return out.toString();
+    }
+
+    /**
+     * Send a message to the MainActivity
+     */
+    private static void toMainThreadHandlerMsg(String info){
+        Message msg = Message.obtain();
+        msg.what = HANDLER_SEND;
+        msg.obj = info;
+        __PlugginControl__.toMainHandler.sendMessage(msg);
+    }
+
+    //////////////////////////////////////////////////////
+    /////////////                           //////////////
+    /////////////          PUBLIC           //////////////
+    /////////////                           //////////////
+    //////////////////////////////////////////////////////
+
+    /**
+     * Gets the firts IP address of the device
+     * @return The IP Address
+     */
     public static String getIpAddress() {
         String ip = "";
         try {
@@ -54,55 +95,24 @@ public class ThreadHttpServer extends Thread {
         }
         return ip;
     }
-        /*
-        StringBuilder ip = new StringBuilder();
-        try {
-            Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
 
-            while (enumNetworkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
-                Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
-
-                while (enumInetAddress.hasMoreElements()) {
-                    InetAddress inetAddress = enumInetAddress.nextElement();
-
-                    if (inetAddress.isSiteLocalAddress())
-                        ip.append(inetAddress.getHostAddress());
-                }
-
-            }
-
-        } catch (SocketException e) {
-            e.printStackTrace();
-            ip.append("Something Wrong! ").append(e).append("\n");
-        }
-        return ip.toString();
-    }
-         */
-
-    //Sabe si el hilo esta corriento
+    /**
+     * Returns the state of the current Thread
+     * @return {@code True} if Thread is running. {@code False} if otherwise.
+     */
     public static boolean isThreadHttpServerRunning(){
         return threadHttpServerRunning;
     }
 
+    //////////////////////////////////////////////////////
+    /////////////                           //////////////
+    /////////////          LOPPER           //////////////
+    /////////////                           //////////////
+    //////////////////////////////////////////////////////
 
-    //Lee el HTML y lo transforma a String
-    private static String htmlToString(String fileName) throws IOException {
-        InputStream inputStream = __PlugginControl__.context.getAssets().open(fileName);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF8"));
-        StringBuilder out = new StringBuilder();
-        final char[] buffer = new char[1024];
-        int read;
-        do {
-            read = bufferedReader.read(buffer, 0, buffer.length);
-            if (read > 0)
-                out.append(buffer, 0, read);
-        } while (read >= 0);
-
-        return out.toString();
-    }
-
-
+    /**
+     * If there is any HTTP request, send the "index.html" file.
+     */
     @Override
     public void run() {
         threadHttpServerRunning = true;
@@ -120,7 +130,7 @@ public class ThreadHttpServer extends Thread {
                 PrintWriter os;
                 String request;
 
-                //Ciclo para enviar el HTTP con el websocket
+                //Send the HTTP response
                 while(!socket.isClosed()) {
                     try {
                         is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -137,7 +147,7 @@ public class ThreadHttpServer extends Thread {
 
                         socket.close();
 
-                        msgLog = "Request of " + request + " from " + socket.getInetAddress().toString() + "\n";
+                        String msgLog = "Request of " + request + " from " + socket.getInetAddress().toString() + "\n";
                         toMainThreadHandlerMsg(msgLog);
 
                     } catch (IOException e) {
@@ -151,12 +161,5 @@ public class ThreadHttpServer extends Thread {
             e.printStackTrace();
         }
 
-    }
-
-    private static void toMainThreadHandlerMsg(String info){
-        Message msg = Message.obtain();
-        msg.what = HANDLER_SEND;
-        msg.obj = info;
-        __PlugginControl__.toMainHandler.sendMessage(msg);
     }
 }

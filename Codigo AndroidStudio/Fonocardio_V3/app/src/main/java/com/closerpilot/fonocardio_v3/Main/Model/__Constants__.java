@@ -1,6 +1,8 @@
 package com.closerpilot.fonocardio_v3.Main.Model;
 
 public class __Constants__ {
+
+    //Handler message identifier
     public static final int HANDLER_ERROR = 0;
     public static final int HANDLER_DEBUG = 1;
     public static final int HANDLER_ICON_BLINK_TIMER = 2;
@@ -17,23 +19,26 @@ public class __Constants__ {
     public static final int HANDLER_BUFFERS_BAUDRATE = 13;
     public static final int HANDLER_SEND = 14;
 
+    //Attiny commands
     public static final char ATTINY_START = 'a';
     public static final char ATTINY_STOP = 'b';
 
+    //Seconds of the timmer (sync the app)
     public static final int SEGUNDOS_1 = 1000;
 
     public static final boolean BLUETOOTH_DISCONNECTED = false;
     public static final boolean BLUETOOTH_CONNECTED = true;
 
-    //Cronometro estados
+    //Chronometer states
     public static final int RUN = 0;
     public static final int STOP = 1;
     public static final int STAND_BY = 2;
 
-
+    //HTTP and WebSocket PORTS
     public static final int HTTP_SERVER_PORT = 8888;
     public static final int WEBSOCKET_PORT = 8080;
 
+    //Number of seconds to show
     public static int NUM_OF_BUFFER_DISPLAYS = 1;
 
     //If the data is inverted due to the circuit

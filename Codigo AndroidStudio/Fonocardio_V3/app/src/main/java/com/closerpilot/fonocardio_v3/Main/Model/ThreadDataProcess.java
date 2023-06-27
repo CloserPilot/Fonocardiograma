@@ -22,11 +22,15 @@ import org.json.JSONException;
 
 public class ThreadDataProcess extends Thread {
     private static final String TAG = "HILO_ARCHIVOS";
+
+    //File
     private static File file = null;
     private static File filePath = null;
     private static FileWriter fileWriter = null;
     private static PrintWriter printwriter = null;
     private static String fileName = null;
+
+    // Boolean to know if current thread is running
     private static boolean threadDataProcessRunning = false;
 
 
@@ -83,8 +87,9 @@ public class ThreadDataProcess extends Thread {
             printwriter = new PrintWriter(fileWriter);
         } catch (IOException e) {
             e.printStackTrace();
-            __PlugginControl__.toThreadDataHandler.sendEmptyMessage(HANDLER_BLUETOOTH_RESET);       //<--------------
+            __PlugginControl__.toThreadDataHandler.sendEmptyMessage(HANDLER_BLUETOOTH_RESET);
             errorToMain_Files("Error al ligar buffers de Escritura");
+            destroyBuffers();
         }
     }
 
@@ -140,13 +145,13 @@ public class ThreadDataProcess extends Thread {
     //////////////////////////////////////////////////////
 
     /**
-     * Save data, write BaudRate and close the file.
+     * Write BaudRate and close the file.
      */
     public static void flushData(){
         if (printwriter != null) {
             int baudRate = myPlotter.getBaudRate();
 
-            //Escribe la velocidad de muestreo en el final del archivo
+            //Write the BaudRate at the end of the file
             if (baudRate>0)
                 saveOnFileNoFormat("\n\n\n@@" + String.valueOf(baudRate));
 
@@ -185,7 +190,9 @@ public class ThreadDataProcess extends Thread {
     /////////////         HANDLER           //////////////
     /////////////                           //////////////
     //////////////////////////////////////////////////////
-
+    /**
+     * Handler for Thread Data
+     */
     public static Handler threadDataProcessHandler = new Handler(Looper.myLooper()) {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
@@ -220,6 +227,10 @@ public class ThreadDataProcess extends Thread {
     /////////////          LOPPER           //////////////
     /////////////                           //////////////
     //////////////////////////////////////////////////////
+
+    /**
+     * If there is information in the bufferRawData, save the data on the file and redirect to bufferData.
+     */
     @Override
     public void run() {
         __PlugginControl__.toThreadDataProcessHandler = threadDataProcessHandler;
@@ -229,15 +240,17 @@ public class ThreadDataProcess extends Thread {
             try {
                 Short[] buffer = __PlugginControl__.bufferRawData.take();
                 //|-----------------------------------------------------------------------------------------------------------------|
-                //<------------------   Aqui se agrega algun tipo de procesamiento que se quiera dar a los datos   ----------------->
+                //<---------------------------      HERE Add some type of data processing       ------------------------------------>
                 //|-----------------------------------------------------------------------------------------------------------------|
-                __PlugginControl__.bufferData.put(buffer);                                      //Manda el buffer procesado a plot y saveOnFile
-                __PlugginControl__.webSocketHttp.broadcast(new JSONArray(buffer).toString());   //Manda el buffer procesado a LAN
+                __PlugginControl__.bufferData.put(buffer);                                          //Send the process buffer to the plotter
 
-                //Grafica los nuevos datos
+                if(__PlugginControl__.webSocketHttp!=null)
+                    __PlugginControl__.webSocketHttp.broadcast(new JSONArray(buffer).toString());   //Send the process buffer to LAN
+
+                //Plot the data
                 myPlotter.addEntry();
 
-                //Guardar en archivo
+                //Save on file
                 if (fileName != null)
                     saveOnFile(buffer);
 
