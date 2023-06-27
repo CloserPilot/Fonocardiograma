@@ -17,6 +17,7 @@
     <string name="id_buttonConfig">Aceptar</string>
     <string name="id_bufferCount">Numero de segundos</string>
     <string name="id_baudRate">BaudRate</string>
+    <string name="id_addplot">Gráficar</string>
 
     <!--Button Labels-->
     <string name="Stop">Detener</string>

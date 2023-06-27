@@ -243,12 +243,12 @@ public class ThreadData extends Thread {
                         try {
                             __PlugginControl__.bufferRawData.put(bufferDinamic.toArray(new Short[0]));
                             Log.d(TAG, "handleMessage: " + bufferDinamic.size());
-                            bufferDinamic.clear();
                             Log.d(TAG, "Data send!!");
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
+                    bufferDinamic.clear();
                     break;
             }
         }

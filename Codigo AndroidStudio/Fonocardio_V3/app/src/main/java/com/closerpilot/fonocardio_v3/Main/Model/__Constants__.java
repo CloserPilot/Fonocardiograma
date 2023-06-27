@@ -44,4 +44,6 @@ public class __Constants__ {
     //If the data is inverted due to the circuit
     public static final boolean INVERT_DATA = false;
 
+    //Variable to plot
+    public static boolean PLOT = true;
 }

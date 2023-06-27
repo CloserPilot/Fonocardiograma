@@ -121,8 +121,8 @@ public class myPlotter {
      */
     public static void cleanPlotter(){
         myPlotter.plotter.removeAllSeries();
-        packagesReceive = 0;
         dataCount = 0;
+        packagesReceive = 0;
     }
 
     /**
@@ -133,7 +133,14 @@ public class myPlotter {
         return baudRate;
     }
 
-
+    /**
+     * Reset the BaudRate
+     */
+    public static void resetBaudRate(){
+        dataCount = 0;
+        packagesReceive = 0;
+        baudRate = 0;
+    }
     //<----------------------------------------------------------------------------------->
     //<----------------------------------------------------------------------------------->
     //<--------------    CREA MUCHA BASURA HAY QUE MODIFICAR EL CODIGO     --------------->

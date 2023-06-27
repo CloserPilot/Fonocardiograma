@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,11 +18,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadDataProcess;
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadHttpServer;
+import com.closerpilot.fonocardio_v3.Main.Model.__Constants__;
 import com.closerpilot.fonocardio_v3.R;
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadData;
 import com.closerpilot.fonocardio_v3.LinkedDevices.LinkedDevicesActivity;
@@ -271,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
         chronometerRunning = RUN;
         __PlugginControl__.toThreadDataHandler.sendEmptyMessage(HANDLER_BLUETOOTH_START);
         errorText.setText("");
+        myPlotter.resetBaudRate();
 
         Message msg = Message.obtain();
         msg.what = HANDLER_BUFFERS_LINK;
@@ -372,14 +376,24 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Set the number of seconds to show in the plot
+     * Set if ploter show
      * @param view
      */
-    public void setBufferCount(View view){
+    public void setConfiguration(View view){
         TextView bufferCountText = popupView.findViewById(R.id.id_bufferCount);
+        Switch setPloter = popupView.findViewById(R.id.id_addplot);
 
         if(bufferCountText.getText().length()!=0) {
             NUM_OF_BUFFER_DISPLAYS = Integer.parseInt(bufferCountText.getText().toString());
         }
+
+        if(setPloter.isChecked())
+            PLOT = true;
+        else {
+            PLOT = false;
+            myPlotter.cleanPlotter();
+        }
+
         popupWindow.dismiss();
     }
 

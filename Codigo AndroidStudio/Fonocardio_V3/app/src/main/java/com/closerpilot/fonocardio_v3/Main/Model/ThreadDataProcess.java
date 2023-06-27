@@ -4,6 +4,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
@@ -242,13 +244,15 @@ public class ThreadDataProcess extends Thread {
                 //|-----------------------------------------------------------------------------------------------------------------|
                 //<---------------------------      HERE Add some type of data processing       ------------------------------------>
                 //|-----------------------------------------------------------------------------------------------------------------|
-                __PlugginControl__.bufferData.put(buffer);                                          //Send the process buffer to the plotter
 
                 if(__PlugginControl__.webSocketHttp!=null)
                     __PlugginControl__.webSocketHttp.broadcast(new JSONArray(buffer).toString());   //Send the process buffer to LAN
 
                 //Plot the data
-                myPlotter.addEntry();
+                if(PLOT) {
+                    __PlugginControl__.bufferData.put(buffer);                                          //Send the process buffer to the plotter
+                    myPlotter.addEntry();
+                }
 
                 //Save on file
                 if (fileName != null)
