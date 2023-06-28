@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();      //Recupera el item seleccionado
 
         if(id == R.id.id_info)
-            myToast.message("Fonocardiograma V3\nCloser P.\nMario A.P.H. ♥");
+            myToast.message("Fonocardiograma V3\nCloser P.\nMario A.P.H. ♥\ngithub.com/CloserPilot/Fonocardiograma");
         else if(id == R.id.id_settings){
             configurationWindow();
         }else
@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if(id == R.id.id_ip_address)
-            errorText.setText("Dirección IP " + __PlugginControl__.threadHttpServer.getIpAddress());
+            errorText.setText("Dirección IP " + __PlugginControl__.threadHttpServer.getIpAddress() + ":" + HTTP_SERVER_PORT);
 
         return super.onOptionsItemSelected(item);
     }
