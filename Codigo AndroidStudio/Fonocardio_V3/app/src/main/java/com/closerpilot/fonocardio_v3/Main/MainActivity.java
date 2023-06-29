@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadDataProcess;
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadHttpServer;
-import com.closerpilot.fonocardio_v3.Main.Model.__Constants__;
 import com.closerpilot.fonocardio_v3.R;
 import com.closerpilot.fonocardio_v3.Main.Model.ThreadData;
 import com.closerpilot.fonocardio_v3.LinkedDevices.LinkedDevicesActivity;
