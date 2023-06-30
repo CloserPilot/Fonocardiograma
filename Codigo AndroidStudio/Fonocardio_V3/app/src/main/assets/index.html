@@ -138,7 +138,8 @@
 <div style="padding-top: 20px;">
     <label style="font-size: 160% ">Capacidad del archivo</label>
     <label id="id_sizeFile" style="font-size: 160%; padding-left:20px; padding-right: 20px; background-color: cyan; border: 1px solid rgb(0, 0, 0);">0KB</label>
-    <button id="id_saveFile"  style = "font-size: 160%" onclick="clearFile()" >Limpiar</button>
+    <button id="id_clearFile"  style = "font-size: 160%" onclick="clearFile()" >Limpiar</button>
+    <label id="id_baudRate" style="font-size: 160%; padding-left:50px">BaudRate</label>
 </div>
 
 <div style="width: 100%; height: 100%;">
@@ -155,10 +156,11 @@
             console.log("Fonocardiograma V3");
             console.log("Closer P.");
 
-            let numBuffers = 1;
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight-100;
             canvas.lineWidth = 0.5;
+            canvas.numBuffers = 1;
+            canvas.baudRate = 0;
             canvas.data = [];
             canvas.allData = [];
 
@@ -168,7 +170,7 @@
             })
 
             inputElem.addEventListener('input', () => {
-                numBuffers = parseInt(inputElem.value)
+                canvas.numBuffers = parseInt(inputElem.value)
             });
 
             document.getElementById('id_info').addEventListener('click', function (event) {
@@ -197,7 +199,9 @@
                 let ctx = canvas.getContext("2d");
                 canvas.data.push(data);
                 canvas.allData.push(data);
-                while(canvas.data.length>numBuffers){
+                canvas.baudRate = Math.floor(canvas.allData.flat(1).length/canvas.allData.length);
+                document.getElementById("id_baudRate").innerText = "BaudRate :" + canvas.baudRate;
+                while(canvas.data.length>canvas.numBuffers){
                     canvas.data.shift();
                 }
 
@@ -218,12 +222,16 @@
             }
 
 
+
+
             function getFileSize(){
                 let sizeLabel = document.getElementById('id_sizeFile');
                 let size = canvas.allData.flat(1).length/1024*4;
                 size = size.toPrecision(4);
                 sizeLabel.innerText = size + "KB";
             }
+
+
 
 
             function mapCanvas(array,maxX, maxY){
@@ -238,6 +246,8 @@
                 }
                 return values;
             }
+
+
 
 
             function clearCanvas() {
@@ -269,8 +279,11 @@
 
 
 
+
+
             function saveFile(){
-            let datos = JSON.stringify(canvas.allData);
+            let datos = JSON.stringify("BaudRate: " + canvas.baudRate + "\0");
+            datos += JSON.stringify(canvas.allData);
             datos = datos.replaceAll(',','\n');
             datos = datos.replaceAll('[','');
             datos = datos.replaceAll(']','');
@@ -293,10 +306,13 @@
             }
 
 
+
+
             function clearFile(){
                 clearCanvas();
                 canvas.data = [];
                 canvas.allData = [];
+                canvas.baudRate = 0;
             }
 
             </script>
