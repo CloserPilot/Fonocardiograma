@@ -1,6 +1,7 @@
 # Fonocardiograma
 Repositorio para el codigo fuente y circuitos del fonocardiograma                                   <br />
 
+$\colorbox{red}{???}$
 ${\color{green}APK}$: Carpeta con el archivo APK para instalar la aplicación en el dispositivo Android               <br />
 ${\color{green}Circuitos}$: Carpeta con todos los esquemáticos y placas en KICAD de las 3 versiones del circuito     <br />
 ${\color{green}Codigo Android Studio}$: Carpeta con el proyecto en Android Studio                                    <br />
