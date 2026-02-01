@@ -1,12 +1,6 @@
 # 🫀 Fonocardiograma
 
 Sistema completo para **registro, visualización y análisis de fonocardiogramas (PCG)** que combina hardware electrónico, firmware para microcontrolador y aplicación móvil Android.
-
-<img width="734" height="396" alt="image" src="https://github.com/user-attachments/assets/9116db13-cc20-40a9-9e00-cfb209b2e2b5" />
-<img width="862" height="1134" alt="image" src="https://github.com/user-attachments/assets/9a63d5f2-67c5-4375-a02c-7de77121796a" />
-
-
-
 ---
 
 ## 📌 Descripción del proyecto
@@ -136,3 +130,8 @@ Se aceptan mejoras en:
 - Visualización y análisis de señal
 
 Usa *issues* o *pull requests* para proponer cambios.
+
+
+<img width="734" height="396" alt="image" src="https://github.com/user-attachments/assets/9116db13-cc20-40a9-9e00-cfb209b2e2b5" />
+
+<img width="862" height="1134" alt="image" src="https://github.com/user-attachments/assets/9a63d5f2-67c5-4375-a02c-7de77121796a" />
